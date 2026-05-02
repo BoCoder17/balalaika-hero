@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene';
 import { MenuScene } from './scenes/MenuScene';
 import { GameScene } from './scenes/GameScene';
+import { ResultScene } from './scenes/ResultScene';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -17,7 +18,7 @@ const config: Phaser.Types.Core.GameConfig = {
         disableWebAudio: false,
         noAudio: false
     },
-    scene: [BootScene, MenuScene, GameScene]
+    scene: [BootScene, MenuScene, GameScene, ResultScene]
 };
 
 // Инициализация игры

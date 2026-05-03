@@ -80,32 +80,20 @@ export class GameScene extends Phaser.Scene {
             this.scale.width,
             this.scale.height,
             0x000000,
-            0.5 // регулируй (0.3–0.7)
+            0.5 
         ).setOrigin(0).setDepth(-15);
 
         const store = GameStore.getInstance();
         store.reset(store.state.difficulty, store.state.currentTrack); 
 
-        // --- 1. ФОН И ТРАЕКТОРИИ ---
-        // Градиентная подложка
         const graphicsBg = this.make.graphics({ x: 0, y: 0, add: false });
         graphicsBg.fillGradientStyle(0x1a0505, 0x1a0505, 0x000000, 0x000000, 1);
         graphicsBg.fillRect(0, 0, width, height);
         graphicsBg.generateTexture('main_bg', width, height);
-        //this.add.image(0, 0, 'main_bg').setOrigin(0, 0).setDepth(-10);
+        this.add.image(0, 0, 'main_bg').setOrigin(0, 0).setDepth(-10);
 
-        // Дорожки под струнами
-        //const trackGraphics = this.add.graphics().setDepth(-5);
 
-        //this.stringYPositions.forEach((y) => {
-            //trackGraphics.fillStyle(0xffffff, 0.03); 
-            //trackGraphics.fillRect(0, y - 20, width, 40);
             
-            //trackGraphics.lineStyle(1, 0xffffff, 0.05);
-            //trackGraphics.lineBetween(0, y - 20, width, y - 20);
-            //trackGraphics.lineBetween(0, y + 20, width, y + 20);
-        //});
-        // 🎸 балалайка
         const balalaika = this.add.image(
                 550,
                 this.scale.height - 2050,
@@ -115,10 +103,8 @@ export class GameScene extends Phaser.Scene {
             balalaika.setScale(2);
             balalaika.setDepth(8);
 
-            // 👉 поворот
             balalaika.setAngle(90);
 
-        // Виньетка и затемнение верха
         const overlay = this.add.graphics().setDepth(15);
         overlay.fillGradientStyle(
             0x000000, 0x000000,
@@ -126,8 +112,6 @@ export class GameScene extends Phaser.Scene {
             0.4, 0.4, 0, 0
         );
 
-        // --- 2. ГЕЙМПЛЕЙНЫЕ ОБЪЕКТЫ ---
-        // Струны
         this.strings = [];
 
         this.stringYPositions.forEach((y) => {
@@ -155,18 +139,15 @@ export class GameScene extends Phaser.Scene {
             });
         });
 
-        // Медведь
         this.bear = this.add.sprite(width / 2, height / 2 + 30, 'bear_sleep');
         this.bear.setScale(0.9).setAlpha(1).setDepth(-1);
 
-        // Мишени
         const keys = ['A', 'S', 'D'];
         const colors = [0xff4444, 0x4488ff, 0x44ff44];
         
         keys.forEach((keyName, index) => {
             const y = this.stringYPositions[index];
 
-    // 🎯 линия тайминга
     const hitLine = this.add.rectangle(
         150,
         y,
@@ -175,17 +156,15 @@ export class GameScene extends Phaser.Scene {
         colors[index],
         0.6
     ).setDepth(10);
-    // 🎯 PERFECT зона (внутри линии)
         const perfectZone = this.add.rectangle(
             150,
             y,
-            6, // узкая
+            6,
             80,
             0xffffff,
             0.2
         ).setDepth(12);
 
-    // 🔤 буква
     const keyText = this.add.text(150, y, keyName, {
         fontFamily: this.UI_STYLE.fontFamily,
         fontSize: '28px',
@@ -199,13 +178,11 @@ export class GameScene extends Phaser.Scene {
 
     this.input.keyboard?.on(`keydown-${keyName}`, () => {
 
-        // подсветка линии
         hitLine.setAlpha(1);
         this.time.delayedCall(100, () => {
             hitLine.setAlpha(0.6);
         });
 
-        // подсветка кнопки
         keyText.setScale(1.2);
         this.tweens.add({
             targets: keyText,
@@ -213,12 +190,10 @@ export class GameScene extends Phaser.Scene {
             duration: 100
         });
 
-        // ⚡ ВАЖНО: теперь тут!
         this.checkHit(index);
     });
 });
 
-        // --- 3. ИНТЕРФЕЙС ---
         const textStyle = {
             fontFamily: this.UI_STYLE.fontFamily,
             fontSize: '36px',
@@ -236,12 +211,10 @@ export class GameScene extends Phaser.Scene {
             fontSize: '20px', color: this.UI_STYLE.gold, stroke: this.UI_STYLE.red, strokeThickness: 4
         }).setOrigin(0.5).setDepth(25);
 
-        // Слушатели и музыка
         this.setupEventListeners(store);
         const trackKey = store.state.currentTrack;
                 this.currentMusic = this.sound.add(trackKey, { volume: 0.5 });
 
-        // Ноты
                 this.notesGroup = this.physics.add.group();
                 const durationMs = (this.currentMusic.duration > 0 ? this.currentMusic.duration : 180) * 1000; 
                 this.notesData = NoteGenerator.generate(store.state.currentTrack, store.state.difficulty, durationMs);
@@ -337,7 +310,7 @@ export class GameScene extends Phaser.Scene {
         const store = GameStore.getInstance();
         const stringYPositions = [450, 550, 650];
         const y = stringYPositions[data.stringId];
-        const speedMap: Record<string, number> = { 'easy': -400, 'medium': -600, 'hard': -900 };
+        const speedMap: Record<string, number> = { 'easy': -300, 'medium': -450, 'hard': -600 };
         const velocityX = speedMap[store.state.difficulty] || -500;
         let texture = data.type === 'bomb' ? 'note_bomb' : (data.type === 'golden' ? 'note_golden' : 'note_normal'); 
     
@@ -382,10 +355,8 @@ export class GameScene extends Phaser.Scene {
 
     private checkHit(stringIndex: number) {
         
-        // оригинальные точки
         const baseY = this.stringYPositions[stringIndex];
 
-        // 🎵 лёгкий кач камеры
         this.tweens.add({
             targets: this.cameras.main,
             zoom: 1.02,
@@ -393,7 +364,6 @@ export class GameScene extends Phaser.Scene {
             yoyo: true
         });
 
-        // 🔥 пульс комбо
         this.tweens.add({
             targets: this.comboText,
             scale: 1.3,
@@ -402,7 +372,6 @@ export class GameScene extends Phaser.Scene {
         });
         
 
-        // создаём волну
         this.tweens.addCounter({
             from: 0,
             to: Math.PI,
@@ -412,7 +381,6 @@ export class GameScene extends Phaser.Scene {
                 const value = tween.getValue();
             },
             onComplete: () => {
-                // возвращаем обратно
                     }
                 });
         const store = GameStore.getInstance();
@@ -450,13 +418,12 @@ export class GameScene extends Phaser.Scene {
                     const score = (isPerfect ? 100 : 50) * (type === 'golden' ? 2 : 1);
                     store.addScore(score, isPerfect);
 
-                    // 🔥 вручную усиливаем комбо
+
                     if (isPerfect) {
-                    store.state.combo += 1; // +1 сверху стандартного = итого +2
+                    store.state.combo += 1;
                     }
                     this.showFeedback(150, targetY, isPerfect ? 'ИДЕАЛЬНО!' : 'ХОРОШО!', type === 'golden' ? this.UI_STYLE.gold : '#ffffff');
                     if (isPerfect) {
-                        //this.cameras.main.flash(50, 255, 255, 255);
 
                         this.tweens.add({
                             targets: this.comboText,
@@ -483,8 +450,7 @@ export class GameScene extends Phaser.Scene {
             this.updatePatriotismUI();
 
             this.cameras.main.shake(100, 0.005);
-            this.cameras.main.flash(100, 255, 0, 0); // ✅ вместо note
-            // 🌊 волна по струне
+            this.cameras.main.flash(100, 255, 0, 0);
             for (let i = 0; i < 3; i++) {
             const wave = this.add.circle(150, targetY, 6, 0xffffff, 0.8)
                 .setDepth(6);
@@ -545,7 +511,6 @@ export class GameScene extends Phaser.Scene {
     private updateBearState(combo: number) {
     if (this.isRoaring) return;
 
-    // 🔥 быстрее танец
     if (combo >= 20) { 
         this.startDancing(); 
         return; 
@@ -555,8 +520,8 @@ export class GameScene extends Phaser.Scene {
 
     let targetKey = 'bear_sleep';
 
-    if (combo >= 12) targetKey = 'bear_ready';   // раньше 25
-    else if (combo >= 6) targetKey = 'bear_wake'; // раньше 15
+    if (combo >= 12) targetKey = 'bear_ready';
+    else if (combo >= 6) targetKey = 'bear_wake';
 
     if (this.bear.texture.key !== targetKey) {
         this.bear.setTexture(targetKey);
@@ -604,15 +569,12 @@ export class GameScene extends Phaser.Scene {
             const left = points[i - 1];
             const right = points[i + 1];
 
-            // возврат к базовой линии
             const restore = (p.baseY - p.y) * 0.15;
 
-            // влияние соседей (меньше!)
             const spread = (left.y + right.y - 2 * p.y) * 0.15;
 
             p.velocity += restore + spread;
 
-            // сильное затухание
             p.velocity *= 0.8;
             if (Math.abs(p.velocity) < 0.05) {
                 p.velocity = 0;
@@ -624,13 +586,11 @@ export class GameScene extends Phaser.Scene {
                 p.y = p.baseY;
             }
 
-            // ОГРАНИЧЕНИЕ (очень важно)
             const maxOffset = 40;
             if (p.y > p.baseY + maxOffset) p.y = p.baseY + maxOffset;
             if (p.y < p.baseY - maxOffset) p.y = p.baseY - maxOffset;
         }
 
-        // рисуем струну
         g.clear();
         g.lineStyle(3, 0xffffff, 0.85);
         g.beginPath();
@@ -652,10 +612,8 @@ private hitString(index: number) {
 
     const points = string.points;
 
-    // точка удара (примерно где линия)
     const hitX = 150;
 
-    // ищем ближайшую точку
     let closest = 0;
     let minDist = Infinity;
 
@@ -667,10 +625,8 @@ private hitString(index: number) {
         }
     });
 
-    // мощный, но контролируемый удар
         points[closest].velocity = -18;
 
-        // добавим соседям чуть энергии → волна пойдёт дальше
         if (points[closest - 1]) points[closest - 1].velocity = -10;
         if (points[closest + 1]) points[closest + 1].velocity = -10;
         
@@ -681,12 +637,10 @@ private hitString(index: number) {
         this.isEnding = true;
         this.stopDancing();
 
-        // Расчет точности
         const accuracy = this.totalNotesInLevel > 0 
             ? (this.successfulHits / this.totalNotesInLevel) * 100 
             : 0;
 
-        // Определение ранга
         let rank = 'F';
         if (accuracy >= 95) rank = 'S';
         else if (accuracy >= 85) rank = 'A';

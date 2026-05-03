@@ -26,5 +26,4 @@ const config: Phaser.Types.Core.GameConfig = {
     scene: [BootScene, MenuScene, GameScene, ResultScene, PauseScene]
 };
 
-// Инициализация игры
 new Phaser.Game(config);

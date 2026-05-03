@@ -7,7 +7,6 @@ export class BootScene extends Phaser.Scene {
 
   
     preload() {
-    // Картинки
         this.load.image('bear_sleep', '/assets/images/bear_sleep.png');
         this.load.image('bear_wake', '/assets/images/bear_wake.png');
         this.load.image('bear_ready', '/assets/images/bear_ready.png');
@@ -31,7 +30,6 @@ export class BootScene extends Phaser.Scene {
 
         this.load.image('menu_bg', '/assets/images/menu-background.png');
 
-    // Аудио
         this.load.audio('kalinka', 'assets/audio/fixed_kalinka.mp3');
         this.load.audio('katyusha', 'assets/audio/fixed_katyusha.mp3');
         this.load.audio('ogorod', 'assets/audio/fixed_ogorod.mp3');

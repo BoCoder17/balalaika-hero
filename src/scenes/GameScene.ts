@@ -86,7 +86,7 @@ export class GameScene extends Phaser.Scene {
         const store = GameStore.getInstance();
         store.reset(store.state.difficulty, store.state.currentTrack); 
 
-        const graphicsBg = this.make.graphics({ x: 0, y: 0, add: false });
+        const graphicsBg = this.make.graphics({ x: 0, y: 0, });
         graphicsBg.fillGradientStyle(0x1a0505, 0x1a0505, 0x000000, 0x000000, 1);
         graphicsBg.fillRect(0, 0, width, height);
         graphicsBg.generateTexture('main_bg', width, height);

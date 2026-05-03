@@ -8,10 +8,8 @@ export class PauseScene extends Phaser.Scene {
     create() {
         const { width, height } = this.cameras.main;
 
-        // 1. Затемнение
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7);
 
-        // 2. Заголовок (в стиле Ruslan)
         this.add.text(width / 2, height / 2 - 120, 'ПАУЗА', {
             fontFamily: 'Ruslan',
             fontSize: '64px', 
@@ -20,7 +18,6 @@ export class PauseScene extends Phaser.Scene {
             strokeThickness: 6
         }).setOrigin(0.5);
 
-        // 3. Кнопки
         this.createButton(width / 2, height / 2, 'ПРОДОЛЖИТЬ', () => {
             this.scene.resume('GameScene');
             this.scene.stop();
@@ -33,43 +30,33 @@ export class PauseScene extends Phaser.Scene {
             this.scene.stop();
         });
 
-        // КНОПКА "В МЕНЮ" С ЗАДЕРЖКОЙ
         this.createButton(width / 2, height / 2 + 160, 'В МЕНЮ', () => {
-            // 1. Сначала полностью очищаем ввод и звуки
             this.resetGameContext();
 
-            // 2. Используем задержку в 10мс (1 кадр), чтобы Phaser корректно закрыл текущий стек событий
             this.time.delayedCall(10, () => {
-                // Останавливаем всё принудительно
                 this.scene.stop('GameScene');
                 
-                // Запускаем Меню
                 this.scene.start('MenuScene');
                 
-                // Останавливаем саму паузу
                 this.scene.stop();
             });
         });
     }
 
     private resetGameContext() {
-        // Останавливаем все звуки сразу
         this.sound.stopAll();
 
         const gameScene = this.scene.get('GameScene');
         
         if (gameScene) {
-            // Выключаем таймеры
             gameScene.time.removeAllEvents();
             
-            // Разблокируем и чистим ввод, чтобы клавиши не "залипали" в меню
             if (gameScene.input && gameScene.input.keyboard) {
                 gameScene.input.keyboard.enabled = true;
                 gameScene.input.keyboard.resetKeys();
                 gameScene.input.keyboard.removeAllListeners();
             }
 
-            // Убиваем все анимации
             gameScene.tweens.killAll();
         }
     }

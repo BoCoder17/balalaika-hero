@@ -6,11 +6,10 @@ export class MenuScene extends Phaser.Scene {
     private helpOverlay?: Phaser.GameObjects.Container;
     private trackUIs: { bg: Phaser.GameObjects.Rectangle, text: Phaser.GameObjects.Text, key: string }[] = [];
 
-    // Уточненная палитра под твои пожелания
     private readonly COLORS = {
-        RED_MAIN: 0xb22222,    // Насыщенный красный (для обводок)
-        RED_DARK: 0x4a0000,    // Глубокий бордовый для фона кнопок
-        GOLD: 0xffcc00,        // Твой желтый/золотой
+        RED_MAIN: 0xb22222,
+        RED_DARK: 0x4a0000,
+        GOLD: 0xffcc00,
         WHITE: 0xffffff,
         BLACK: 0x000000
     };
@@ -24,38 +23,39 @@ export class MenuScene extends Phaser.Scene {
         const { width, height } = this.cameras.main;
         const store = GameStore.getInstance();
 
-        // 1. Фон
         const bg = this.add.image(width / 2, height / 2, 'menu_bg');
         bg.setDisplaySize(width, height).setAlpha(1);
 
-        // 2. Декоративные рамки по краям (Желтые с красной обводкой)
-        // Основная толстая рамка
         this.add.rectangle(width / 2, height / 2, width - 40, height - 40)
             .setStrokeStyle(6, this.COLORS.GOLD, 0.9);
-        // Добавляем красную обводку по краям желтой рамки
         this.add.rectangle(width / 2, height / 2, width - 34, height - 34)
             .setStrokeStyle(2, this.COLORS.RED_MAIN, 0.8);
         this.add.rectangle(width / 2, height / 2, width - 46, height - 46)
             .setStrokeStyle(2, this.COLORS.RED_MAIN, 0.8);
 
-        // 3. Заголовок (Желтый с красной обводкой)
         const title = this.add.text(width / 2, 100, 'BALALAIKA HERO', {
-            fontFamily: 'Ruslan',
+            fontFamily: 'EpilepsySans',
             fontSize: '85px',
-            color: '#ffcc00', // Желтый
-            stroke: '#b22222', // Красная обводка
+            color: '#ffcc00',
+            stroke: '#b22222',
             strokeThickness: 10,
             shadow: { offsetX: 4, offsetY: 4, color: '#000', blur: 10, fill: true }
         }).setOrigin(0.5);
 
         this.tweens.add({ targets: title, scale: 1.03, duration: 1500, yoyo: true, repeat: -1 });
 
-        // 4. Орнамент
         this.add.text(width / 2, 170, '❖ ─── ✦ ─── ❖ ─── ✦ ─── ❖', {
             fontSize: '28px', color: '#ffcc00'
         }).setOrigin(0.5);
 
-        // --- ВЫБОР ПЕСНИ ---
+        this.add.text(width / 2, 480, 'ВЫБЕРИ ПЕСНЮ:', { 
+            fontFamily: 'EpilepsySans',
+            fontSize: '26px', 
+            color: '#ffcc00',
+            stroke: '#b22222',
+            strokeThickness: 6
+        }).setOrigin(0.5);
+
         const tracks = ['kalinka', 'katyusha', 'ogorod'];
         
         tracks.forEach((track, index) => {
@@ -66,7 +66,7 @@ export class MenuScene extends Phaser.Scene {
                 .setInteractive({ useHandCursor: true });
 
             const btnText = this.add.text(width / 2, yPos, `~ ${track.toUpperCase()} ~`, {
-                fontFamily: 'Ruslan',
+                fontFamily: 'EpilepsySans',
                 fontSize: '34px',
                 color: '#ffffff',
                 stroke: '#000',
@@ -94,19 +94,18 @@ export class MenuScene extends Phaser.Scene {
             this.updateTrackSelection();
         });
 
-        // --- ВЫБОР СЛОЖНОСТИ (Желтый с красной обводкой) ---
         this.add.text(width / 2, 480, 'ВЫБЕРИ СЛОЖНОСТЬ:', { 
-            fontFamily: 'Ruslan',
+            fontFamily: 'EpilepsySans',
             fontSize: '26px', 
-            color: '#ffcc00', // Желтый
-            stroke: '#b22222', // Красная обводка
+            color: '#ffcc00',
+            stroke: '#b22222',
             strokeThickness: 6
         }).setOrigin(0.5);
 
         const difficulties: Array<{ id: 'easy'|'medium'|'hard', name: string, color: number }> = [
-            { id: 'easy', name: 'ЛЕГКО', color: 0x228b22 },
-            { id: 'medium', name: 'НОРМА', color: 0xd2691e },
-            { id: 'hard', name: 'ХАРД', color: 0x8b0000 }
+            { id: 'easy', name: 'ЛЕГКАЯ', color: 0x228b22 },
+            { id: 'medium', name: 'СРЕДНЯЯ', color: 0xd2691e },
+            { id: 'hard', name: 'СЛОЖНАЯ', color: 0x8b0000 }
         ];
 
         difficulties.forEach((diff, index) => {
@@ -117,7 +116,7 @@ export class MenuScene extends Phaser.Scene {
                 .setInteractive({ useHandCursor: true });
 
             const diffText = this.add.text(xPos, 540, diff.name, {
-                fontFamily: 'Ruslan',
+                fontFamily: 'EpilepsySans',
                 fontSize: '28px',
                 color: '#ffffff',
                 stroke: '#000000',
@@ -139,13 +138,12 @@ export class MenuScene extends Phaser.Scene {
             });
         });
 
-        // Кнопка помощи
         const helpBtn = this.add.rectangle(width - 70, 70, 60, 60, this.COLORS.GOLD)
             .setStrokeStyle(4, this.COLORS.RED_MAIN)
             .setInteractive({ useHandCursor: true });
             
         this.add.text(width - 70, 70, '?', {
-            fontFamily: 'Ruslan', fontSize: '40px', color: '#b22222'
+            fontFamily: 'EpilepsySans', fontSize: '40px', color: '#b22222'
         }).setOrigin(0.5);
 
         helpBtn.on('pointerdown', () => this.showInstructions());
@@ -177,7 +175,7 @@ export class MenuScene extends Phaser.Scene {
         const frameInner = this.add.rectangle(width / 2, height / 2, 620, 420, this.COLORS.RED_DARK);
 
         const title = this.add.text(width / 2, height / 2 - 160, 'СОВЕТЫ МАСТЕРА', {
-            fontFamily: 'Ruslan', fontSize: '42px', color: '#ffcc00', stroke: '#b22222', strokeThickness: 5
+            fontFamily: 'EpilepsySans', fontSize: '42px', color: '#ffcc00', stroke: '#b22222', strokeThickness: 5
         }).setOrigin(0.5);
 
         const rules = [
@@ -190,7 +188,7 @@ export class MenuScene extends Phaser.Scene {
         ];
 
         const text = this.add.text(width / 2, height / 2 + 30, rules.join('\n'), {
-            fontFamily: 'Ruslan', fontSize: '24px', color: '#ffffff', align: 'center', lineSpacing: 12
+            fontFamily: 'EpilepsySans', fontSize: '24px', color: '#ffffff', align: 'center', lineSpacing: 12
         }).setOrigin(0.5);
 
         container.add([bg, frameOuter, frameInner, title, text]);

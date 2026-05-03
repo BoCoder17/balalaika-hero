@@ -19,8 +19,11 @@ const config: Phaser.Types.Core.GameConfig = {
         disableWebAudio: false,
         noAudio: false
     },
+    render: {
+        pixelArt: true,
+        antialias: false
+    },
     scene: [BootScene, MenuScene, GameScene, ResultScene, PauseScene]
 };
 
-// Инициализация игры
 new Phaser.Game(config);

@@ -41,7 +41,7 @@
 Для запуска локально установите `Node.js`.
 ```bash
 # 1. Клонирование репозитория
-git clone 
+git clone https://github.com/BoCoder17/balalaika-hero.git
 cd balalaika-hero
 
 # 2. Установка зависимостей
